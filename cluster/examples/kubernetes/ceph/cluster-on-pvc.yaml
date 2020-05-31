@@ -27,7 +27,7 @@ spec:
     # size appropriate for monitor data will be used.
     volumeClaimTemplate:
       spec:
-        storageClassName: gp2
+        storageClassName: "hcloud-volumes"
         resources:
           requests:
             storage: 10Gi
@@ -37,21 +37,21 @@ spec:
   skipUpgradeChecks: false
   continueUpgradeAfterChecksEvenIfNotHealthy: false
   dashboard:
-    enabled: true
-    ssl: true
+    enabled: false
+    ssl: false
   network:
     hostNetwork: false
   crashCollector:
-    disable: false
+    disable: true
   storage:
     storageClassDeviceSets:
-    - name: set1
+    - name: hzset
       # The number of OSDs to create from this device set
       count: 3
       # IMPORTANT: If volumes specified by the storageClassName are not portable across nodes
       # this needs to be set to false. For example, if using the local storage provisioner
       # this should be false.
-      portable: true
+      portable: false
       # Certain storage class in the Cloud are slow
       # Rook can configure the OSD running on PVC to accommodate that by tuning some of the Ceph internal
       # Currently, "gp2" has been identified as such
@@ -96,12 +96,12 @@ spec:
             requests:
               storage: 10Gi
           # IMPORTANT: Change the storage class depending on your environment (e.g. local-storage, gp2)
-          storageClassName: gp2
+          storageClassName: hcloud-volumes
           volumeMode: Block
           accessModes:
             - ReadWriteOnce
   disruptionManagement:
     managePodBudgets: false
-    osdMaintenanceTimeout: 30
+    osdMaintenanceTimeout: 60
     manageMachineDisruptionBudgets: false
     machineDisruptionBudgetNamespace: openshift-machine-api
